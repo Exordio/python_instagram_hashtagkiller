@@ -1,2 +1,4 @@
 config.py
 selenium
+__pycache__
+.idea
