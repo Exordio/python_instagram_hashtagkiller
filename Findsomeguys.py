@@ -38,9 +38,15 @@ def create_Publication_Link_List(shortcodes):
 def selenium_Launch(link):
     ua = dict(DesiredCapabilities.CHROME)
     options = webdriver.ChromeOptions()
-    options.add_argument("user-data-dir=selenium")
-    options.add_argument('headless') # non-display mode
-    options.add_argument('window-size=1920x935')
+    options.add_argument("--user-data-dir=selenium")
+    #options.add_argument('--headless') # non-display mode
+    #options.add_argument('--disable-gpu')
+    #options.add_argument("--no-sandbox");
+    #options.add_argument("--disable-dev-shm-usage");
+    #options.add_argument('--window-size=1920x935')
+    #options.add_argument("--profile-directory=selenium")
+    #options.add_argument('--remote-debugging-port=9222')
+
     driver = webdriver.Chrome(chrome_options=options)
 
     driver.get(link)
@@ -116,8 +122,8 @@ def create_Table_Xls(p_df, xls_filename):
 
 
 if __name__ == "__main__":
-    print("Hashtag_Killer v.0.1 (c) Exordio\n")
-    hashtag = input('\nhashtag : ')
+    print("Hashtag_Killer v.0.1 (c) Exordio")
+    hashtag = input('\nEnter hashtag : ')
     print('\n\n ------------|| START PARSING ||------------\n')
 
     # Entering hashtag here -
