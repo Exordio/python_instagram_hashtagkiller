@@ -1,10 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import time
-
 import instagram_explore as ie
-import numpy as np
 import pandas as pd
-
-from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup as bs
@@ -92,11 +90,13 @@ def get_Data(plinks):
         print(SubscribersDiv)
         print(Discrp)
         print(input_List[0])
+    parsed_Data_Df.drop_duplicates(keep=False, inplace=True)
 
-def create_Table(p_df, csv_filename):
-    print(p_df)
+def create_Table_Csv(p_df, csv_filename):
     p_df.to_csv(csv_filename, sep=';', encoding='utf-8', index = False)
 
+def create_Table_Xls(p_df, xls_filename):
+    p_df.to_excel(xls_filename, index=False, encoding="utf-8", sheet_name='Parsed_data')
 
 
 if __name__ == "__main__":
@@ -104,8 +104,13 @@ if __name__ == "__main__":
     # Entering hashtag here -
     create_Publication_Link_List(get_Hashtag_Publication_Shortcodes(input('hashtag : ')))
     #print(publication_Links)
+
     get_Data(publication_Links)
-    create_Table(parsed_Data_Df, f'Parsed_data.csv')
+
+    print(parsed_Data_Df)
+
+    create_Table_Csv(parsed_Data_Df, 'Parsed_data.csv')
+    create_Table_Xls(parsed_Data_Df, 'Parsed_data.xlsx')
 
     print("\n ======= END =======")
 
