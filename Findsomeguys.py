@@ -1,16 +1,17 @@
-import requests
-import json
 import time
+
 import instagram_explore as ie
 import numpy as np
+import pandas as pd
+
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup as bs
-#headers = {'accept': '*/*',
-
-#           'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0'}
 
 publication_Links = []
+column_Names = ['Nametag', 'Subscribers', 'Discrption', 'Profile_link']
+parsed_Data_Df = pd.DataFrame(columns = column_Names)
 
 def find(key, dictionary): # find keys into dicts...
     for k, v in dictionary.items():
@@ -33,17 +34,22 @@ def create_Publication_Link_List(shortcodes):
         publication_Links.append(f'https://www.instagram.com/p/{shortcodes[i]}')
 
 def selenium_Launch(link):
-    #ua = dict(DesiredCapabilities.CHROME)
+    ua = dict(DesiredCapabilities.CHROME)
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     options.add_argument('window-size=1920x935')
     driver = webdriver.Chrome(chrome_options=options)
     driver.get(link)
-    driver.find_element_by_xpath('''//*[@id="react-root"]/section/main/div/div/article/header/div[2]/div[1]/div[1]/a''').click()
+    time.sleep(2.5)
+    try:
+        driver.find_element_by_xpath('''//*[@id="react-root"]/section/main/div/div/article/header/div[2]/div[1]/div[1]/a''').click()
+    except:
+        print('\nXpath not found - :/ \n')
+        driver.close()
+        return ["", ""]
+
     time.sleep(2.5)
     data_List = [driver.current_url, driver.page_source]
-    #profile_Link = driver.current_url
-    #page_Info = driver.page_source
     driver.close()
     return data_List
 
@@ -81,16 +87,15 @@ def get_Data(plinks):
         except:
             print('\nError ??\n')
             next()
-            
-
-        #print(NameDiv)
+        parsed_Data_Df.loc[len(parsed_Data_Df)] = [NameTag , SubscribersDiv, Discrp, input_List[0]]
         print(NameTag)
         print(SubscribersDiv)
         print(Discrp)
         print(input_List[0])
 
-
-
+def create_Table(p_df, csv_filename):
+    print(p_df)
+    p_df.to_csv(csv_filename, sep=';', encoding='utf-8', index = False)
 
 
 
@@ -98,8 +103,9 @@ if __name__ == "__main__":
     print("Hashtag_Killer v.0.1 (c) Exordio\n")
     # Entering hashtag here -
     create_Publication_Link_List(get_Hashtag_Publication_Shortcodes(input('hashtag : ')))
-    print(publication_Links)
+    #print(publication_Links)
     get_Data(publication_Links)
+    create_Table(parsed_Data_Df, f'Parsed_data.csv')
 
     print("\n ======= END =======")
 
