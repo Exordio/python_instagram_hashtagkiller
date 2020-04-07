@@ -3,6 +3,7 @@
 import time
 import instagram_explore as ie
 import pandas as pd
+import config
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup as bs
@@ -37,9 +38,11 @@ def create_Publication_Link_List(shortcodes):
 def selenium_Launch(link):
     ua = dict(DesiredCapabilities.CHROME)
     options = webdriver.ChromeOptions()
-    options.add_argument('headless')
-    options.add_argument('window-size=1920x935')
+    options.add_argument("user-data-dir=selenium")
+    #options.add_argument('headless')
+    #options.add_argument('window-size=1920x935')
     driver = webdriver.Chrome(chrome_options=options)
+
     driver.get(link)
     time.sleep(2.5)
     try:
@@ -50,6 +53,13 @@ def selenium_Launch(link):
         return ["", ""]
 
     time.sleep(2.5)
+
+    # in first run or blocktologin, need to uncomment it once and loginin
+    #driver.find_element_by_xpath("//input[@name='username']").send_keys(config.username)#config file / u can erase it and write your on here
+    #driver.find_element_by_xpath("//input[@name='password']").send_keys(config.password)# psswd
+    #driver.find_element_by_xpath(
+    #    '''//*[@id="react-root"]/section/main/div/article/div/div[1]/div/form/div[4]/button/div''').click()
+
     data_List = [driver.current_url, driver.page_source]
     driver.close()
     return data_List
@@ -57,11 +67,9 @@ def selenium_Launch(link):
 def get_Data(plinks):
     i = 0
     for url in plinks:
-
+        input_List = selenium_Launch(url)
         i += 1
         print(f' ==== {i} ====')
-
-        input_List = selenium_Launch(url)
         soup = bs(input_List[1], 'lxml')
         try:
             NameDiv = soup.find(class_="nZSzR")
