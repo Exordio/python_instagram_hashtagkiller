@@ -1,6 +1,6 @@
 # python_instagram_hashtagkiller
 
-80+ posts for parsig.
+160+ posts for parsig.
 
 compiling a database of accounts on hashtag's
 
