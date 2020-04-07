@@ -25,7 +25,10 @@ def find(key, dictionary): # find keys into dicts...
 
 def get_Hashtag_Publication_Shortcodes(hashtag): #
     res = ie.tag(hashtag)
-    return list(find('shortcode', res.data))
+    firstPage = list(find('shortcode', res.data))
+    data, cursor = ie.tag(hashtag, res.cursor)
+    concat_Search_Pages = firstPage + list(find('shortcode', data))
+    return concat_Search_Pages
 
 def create_Publication_Link_List(shortcodes):
     for i in range(len(shortcodes)):
@@ -52,7 +55,12 @@ def selenium_Launch(link):
     return data_List
 
 def get_Data(plinks):
+    i = 0
     for url in plinks:
+
+        i += 1
+        print(f' ==== {i} ====')
+
         input_List = selenium_Launch(url)
         soup = bs(input_List[1], 'lxml')
         try:
